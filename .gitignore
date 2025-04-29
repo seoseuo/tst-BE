@@ -1,0 +1,54 @@
+# Java 빌드 결과물
+/build/
+/out/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# OS 별
+.DS_Store     # macOS
+Thumbs.db     # Windows
+
+# Gradle 관련
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+gradle-app.setting
+
+# 로그 파일
+*.log
+
+# 환경 설정
+.env
+application-*.yml
+application-*.properties
+
+# Lombok
+*.lombok.config
+
+# 테스트 리포트
+/test-output/
+
+# 인증 키 / 보안 파일
+*.pem
+*.key
+*.crt
+
+# 캐시 / 임시 파일
+*.tmp
+*.swp
+
+# AWS credentials (예: 업로드 실수 방지용)
+.aws/
+
+# Node (만약 프론트 포함된 경우)
+node_modules/
+dist/
+
+# 개발툴/IDE 별
+.vscode/
