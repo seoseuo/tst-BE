@@ -51,7 +51,7 @@ public class TestController {
             @RequestParam String userCode,
             @RequestParam int page) {
         log.info("질문 목록 조회 요청 받음, testId: {}, userCode: {}, page: {}", testId, userCode, page);
-        return ResponseEntity.ok(testService.getQuestions(testId, userCode, page);
+        return ResponseEntity.ok(testService.getQuestions(testId, userCode, page));
     }
 
     // 선택지 선택

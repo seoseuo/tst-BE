@@ -1,7 +1,6 @@
 package com.tst.service;
 
 import com.tst.dto.ShowQuestionDTO;
-import com.tst.dto.SelectedChoiceDTO;
 import com.tst.dto.StyleDTO;
 import com.tst.dto.TestDTO;
 import com.tst.entity.Style;
@@ -57,6 +56,7 @@ public class TestService {
         log.info("testId: {}, userCode: {}로 테스트 시작", testId, userCode);
         // UUID 생성
         userCode = userCode + UUID.randomUUID().toString();
+        log.info("UUID : {}",userCode);
 
         // 답변세선 세팅
         AnswerSession answerSession = new AnswerSession();
@@ -112,8 +112,11 @@ public class TestService {
 
         AnswerSession answerSession = redisService.getAnswerSession(userCode);
         Optional<Style> optionalStyle = styleRepository.findById(answerSession.findMostSelectedStyle());
-        Style style = optionalStyle.orElseThrow(() -> new RuntimeException("Style not found"));
+        Style style = optionalStyle.orElseThrow(() -> new RuntimeException("결과를 찾을 수 없습니다."));
 
-        return answerSession.findMostSelectedStyle(), entityDtoMapper.toStyleDTO(style);
+        redisService.delete(userCode);
+        redisService.delete(userCode+"questions");
+
+        return entityDtoMapper.toStyleDTO(style);
     }
 }
