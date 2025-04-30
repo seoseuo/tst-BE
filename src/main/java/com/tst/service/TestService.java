@@ -74,7 +74,8 @@ public class TestService {
         log.info("레디스에 저장된 문항과 선택지: {}", redisService.getShowQuestionDTO(userCode + "questions"));
     }
 
-    public void getQuestions(int testId, String userCode, int page) {
+
+    public ShowQuestionDTO getQuestions(int testId, String userCode, int page) {
         log.info("testId: {}, userCode: {}, page: {}로 질문 조회", testId, userCode, page);
         ShowQuestionDTO boxShowQuestionDTO = redisService.getShowQuestionDTO(userCode + "questions");
 
@@ -86,6 +87,8 @@ public class TestService {
         toShowQuestionDTO.setChoices(boxShowQuestionDTO.getChoices().subList(fromIndex, toIndex));
 
         log.info("testId: {}, page: {}의 문항과 선택지: {}, {}", testId, page, toShowQuestionDTO.getShowQuestion(), toShowQuestionDTO.getChoices());
+
+        return toShowQuestionDTO;
     }
 
     public void selectChoice(int testId, int questionId, int styleId1, int styleId2, String userCode) {

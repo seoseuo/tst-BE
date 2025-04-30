@@ -49,9 +49,7 @@ public class TestController {
             @RequestParam String userCode,
             @RequestParam int page) {
         log.info("질문 목록 조회 요청 받음, testId: {}, userCode: {}, page: {}", testId, userCode, page);
-        ShowQuestionDTO questions = testService.getQuestions(testId, userCode, page);
-        log.info("testId: {}, userCode: {}, page: {}에 대한 질문 목록 반환: {}", testId, userCode, page, questions);
-        return ResponseEntity.ok(questions);
+        return ResponseEntity.ok(testService.getQuestions(testId, userCode, page);
     }
 
     // 선택지 선택
