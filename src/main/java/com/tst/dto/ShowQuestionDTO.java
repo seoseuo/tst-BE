@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class ShowQuestionDTO {
+    private QuestionDTO showQuestion;
     private List<QuestionDTO> questions;
-    private List<ChoiceDTO> options;  
+    private List<ChoiceDTO> choices;
 }

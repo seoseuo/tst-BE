@@ -6,8 +6,9 @@ import com.tst.dto.*;
 import com.tst.entity.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface EntityDtoMapper {
 
     EntityDtoMapper INSTANCE = Mappers.getMapper(EntityDtoMapper.class);

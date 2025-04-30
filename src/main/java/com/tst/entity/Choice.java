@@ -17,6 +17,9 @@ public class Choice {
     @Column(nullable = false)
     private Integer questionId;
 
+    @Column(nullable = false)
+    private Integer testId;
+
     @Column(length = 100)
     private String choiceContent;
 
