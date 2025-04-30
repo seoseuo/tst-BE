@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Log4j2
 @Service
@@ -45,9 +46,9 @@ public class TestService {
         return entityDtoMapper.toTestDTOList(testRepository.findByIsDelete(1));
     }
 
-    public void getTest(int testId) {
-        log.info("testId: {}에 대한 테스트 상세 조회", testId);
-        log.info("테스트 상세 정보: {}", entityDtoMapper.toTestDTO(testRepository.findBytestIdAndIsDelete(testId, 1)));
+    public TestDTO getTest(int testId) {
+        log.info("testId: {} 에 대한 테스트 상세 조회", testId);
+        return entityDtoMapper.toTestDTO(testRepository.findBytestIdAndIsDelete(testId, 1));
     }
 
     public void startTest(int testId, String userCode) {

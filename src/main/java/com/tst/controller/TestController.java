@@ -31,9 +31,7 @@ public class TestController {
     @GetMapping("/{testId}")
     public ResponseEntity<TestDTO> getTest(@PathVariable int testId) {
         log.info("테스트 상세 정보 조회 요청 받음, testId: {}", testId);
-        TestDTO testDTO = testService.getTestById(testId);
-        log.info("testId: {}에 대한 테스트 상세 정보 반환: {}", testId, testDTO);
-        return ResponseEntity.ok(testDTO);
+        return ResponseEntity.ok(testService.getTest(testId));
     }
 
     // 테스트 시작 요청
