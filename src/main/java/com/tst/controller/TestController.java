@@ -39,7 +39,6 @@ public class TestController {
     public ResponseEntity<Void> startTest(@PathVariable int testId, @RequestParam String userCode) {
         log.info("테스트 시작 요청 받음, testId: {}, userCode: {}", testId, userCode);
         testService.startTest(testId, userCode);
-        log.info("testId: {} 테스트 시작 완료, userCode: {}", testId, userCode);
         return ResponseEntity.ok().build();
     }
 

@@ -56,11 +56,14 @@ public class TestService {
         // UUID 생성
         userCode = userCode + UUID.randomUUID().toString();
 
+        // 답변세선 세팅
         AnswerSession answerSession = new AnswerSession();
         answerSession.setTestId(testId);
         answerSession.setUserCode(userCode);
+
         redisService.setAnswerSession(userCode, answerSession, 1800000);
 
+        // 문항 세팅
         ShowQuestionDTO boxShowQuestionDTO = new ShowQuestionDTO();
         boxShowQuestionDTO.setQuestions(entityDtoMapper.toQuestionDTOList(questionRepository.findBytestId(testId)));
         boxShowQuestionDTO.setChoices(entityDtoMapper.toChoiceDTOList(choiceRepository.findBytestId(testId)));
