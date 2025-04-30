@@ -2,6 +2,7 @@ package com.tst.service;
 
 import com.tst.dto.ShowQuestionDTO;
 import com.tst.dto.SelectedChoiceDTO;
+import com.tst.dto.StyleDTO;
 import com.tst.dto.TestDTO;
 import com.tst.entity.Style;
 import com.tst.mapper.EntityDtoMapper;
@@ -106,13 +107,13 @@ public class TestService {
         log.info("레디스에 저장된 선택지: {}", redisService.getAnswerSession(selectUtil.getUserCode()));
     }
 
-    public void getTestResult(int testId, String userCode) {
+    public StyleDTO getStyle(int testId, String userCode) {
         log.info("testId: {}, userCode: {}로 결과 조회", testId, userCode);
 
         AnswerSession answerSession = redisService.getAnswerSession(userCode);
         Optional<Style> optionalStyle = styleRepository.findById(answerSession.findMostSelectedStyle());
         Style style = optionalStyle.orElseThrow(() -> new RuntimeException("Style not found"));
 
-        log.info("testId: {}, userCode: {}의 결과: {} - {}", testId, userCode, answerSession.findMostSelectedStyle(), entityDtoMapper.toStyleDTO(style));
+        return answerSession.findMostSelectedStyle(), entityDtoMapper.toStyleDTO(style);
     }
 }

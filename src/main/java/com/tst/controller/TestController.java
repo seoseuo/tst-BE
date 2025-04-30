@@ -2,6 +2,7 @@ package com.tst.controller;
 
 import com.tst.dto.ChoiceDTO;
 import com.tst.dto.ShowQuestionDTO;
+import com.tst.dto.StyleDTO;
 import com.tst.dto.TestDTO;
 
 import com.tst.service.TestService;
@@ -60,16 +61,14 @@ public class TestController {
             @RequestBody SelectUtil selectUtil) {
         log.info("선택지 선택 요청 받음, testId: {}, 선택 정보: {}", testId, selectUtil);
         testService.selectChoice(testId, selectUtil);
-
         return ResponseEntity.ok().build();
     }
 
     // 결과 가져오기
     @GetMapping("/{testId}/style")
-    public ResponseEntity<String> getResult(@PathVariable int testId, @RequestParam String userCode) {
+    public ResponseEntity<StyleDTO> getResult(@PathVariable int testId, @RequestParam String userCode) {
         log.info("결과 가져오기 요청 받음, testId: {}, userCode: {}", testId, userCode);
-        String result = testService.getTestResult(testId, userCode);
-        log.info("testId: {}에 대한 결과 반환, userCode: {}, 결과: {}", testId, userCode, result);
-        return ResponseEntity.ok(result);
-    }F
+
+        return ResponseEntity.ok(testService.getStyle(testId, userCode));
+    }
 }
