@@ -10,6 +10,7 @@ import com.tst.repository.QuestionRepository;
 import com.tst.repository.StyleRepository;
 import com.tst.repository.TestRepository;
 import com.tst.util.AnswerSession;
+import com.tst.util.SelectUtil;
 import com.tst.util.SelectedBox;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,18 +92,18 @@ public class TestService {
         return toShowQuestionDTO;
     }
 
-    public void selectChoice(int testId, int questionId, int styleId1, int styleId2, String userCode) {
-        log.info("testId: {}, questionId: {}, styleId1: {}, styleId2: {}로 선택지 저장", testId, questionId, styleId1, styleId2);
+    public void selectChoice(int testId, SelectUtil selectUtil) {
+        log.info("testId: {}, selectUtil: {}", testId, selectUtil);
 
         SelectedBox selectedBox = new SelectedBox();
-        selectedBox.setStyleId1(styleId1);
-        selectedBox.setStyleId2(styleId2);
+        selectedBox.setStyleId1(selectUtil.getStyleId1());
+        selectedBox.setStyleId2(selectUtil.getStyleId2());
 
-        AnswerSession answerSession = redisService.getAnswerSession(userCode);
-        answerSession.getSelectedBoxesMap().put(questionId, selectedBox);
-        redisService.setAnswerSession(userCode, answerSession, 1800000);
+        AnswerSession answerSession = redisService.getAnswerSession(selectUtil.getUserCode());
+        answerSession.getSelectedBoxesMap().put(selectUtil.getQuestionId(), selectedBox);
+        redisService.setAnswerSession(selectUtil.getUserCode(), answerSession, 1800000);
 
-        log.info("레디스에 저장된 선택지: {}", redisService.getAnswerSession(userCode));
+        log.info("레디스에 저장된 선택지: {}", redisService.getAnswerSession(selectUtil.getUserCode()));
     }
 
     public void getTestResult(int testId, String userCode) {

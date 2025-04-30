@@ -5,6 +5,7 @@ import com.tst.dto.ShowQuestionDTO;
 import com.tst.dto.TestDTO;
 
 import com.tst.service.TestService;
+import com.tst.util.SelectUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,10 +57,10 @@ public class TestController {
     @PostMapping("/{testId}/questions/select")
     public ResponseEntity<Void> selectChoice(
             @PathVariable int testId,
-            @RequestBody ChoiceDTO choiceDTO) {
-        log.info("선택지 선택 요청 받음, testId: {}, 선택된 선택지: {}", testId, hoiceDTO);
-        testService.selectChoice(testId, choiceDTO);
-        log.info("testId: {} 선택지 선택 완료, 선택된 선택지: {}", testId, hoiceDTO);
+            @RequestBody SelectUtil selectUtil) {
+        log.info("선택지 선택 요청 받음, testId: {}, 선택 정보: {}", testId, selectUtil);
+        testService.selectChoice(testId, selectUtil);
+
         return ResponseEntity.ok().build();
     }
 
