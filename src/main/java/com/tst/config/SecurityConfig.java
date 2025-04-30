@@ -3,8 +3,16 @@ package com.tst.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
+import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -13,17 +21,29 @@ public class SecurityConfig {
     @Value("${custom.front}")
     private String frontUrl;
 
-    // CORS 설정 빈 등록
     @Bean
-    public CorsFilter corsFilter() {
-        org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
-        config.addAllowedOrigin(frontUrl); // 프론트엔드 URL 허용
-        config.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
-        config.addAllowedHeader("*"); // 모든 헤더 허용
-        config.setAllowCredentials(true); // 자격증명(Cookie 등) 허용
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        // 허용할 Origin (Postman 테스트도 고려하여 null 포함)
+        config.setAllowedOrigins(List.of(frontUrl));
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
 
-        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // 모든 URL에 대해 CORS 설정 적용
-        return new CorsFilter(source);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())            // 등록된 CorsConfigurationSource를 사용
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**").permitAll()     // 모든 경로 허용
+                        .anyRequest().authenticated()
+                );
+        return http.build();
     }
 }
