@@ -21,11 +21,17 @@ public class SecurityConfig {
     @Value("${custom.front}")
     private String frontUrl;
 
+    @Value("${custom.front2}")
+    private String frontUrl2;
+
+    @Value("${custom.front3}")
+    private String frontUrl3;
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         // 허용할 Origin (Postman 테스트도 고려하여 null 포함)
-        config.setAllowedOrigins(List.of(frontUrl));
+        config.setAllowedOrigins(List.of(frontUrl,frontUrl2,frontUrl3));
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
