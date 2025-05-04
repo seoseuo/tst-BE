@@ -1,5 +1,6 @@
 package com.tst.service;
 
+import com.tst.dto.QuestionDTO;
 import com.tst.dto.ShowQuestionDTO;
 import com.tst.dto.StyleDTO;
 import com.tst.dto.TestDTO;
@@ -16,6 +17,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -72,8 +74,8 @@ public class TestService {
 
         redisService.setShowQuestionDTO(userCode + "questions", boxShowQuestionDTO, 1800000);
 
-        log.info("레디스에 저장된 데이터 조회: {}", redisService.getAnswerSession(userCode));
-        log.info("레디스에 저장된 문항과 선택지: {}", redisService.getShowQuestionDTO(userCode + "questions"));
+        //log.info("레디스에 저장된 데이터 조회: {}", redisService.getAnswerSession(userCode));
+        //log.info("레디스에 저장된 문항과 선택지: {}", redisService.getShowQuestionDTO(userCode + "questions"));
 
         return userCode;
     }
@@ -85,15 +87,28 @@ public class TestService {
 
         ShowQuestionDTO toShowQuestionDTO = new ShowQuestionDTO();
         int fromIndex = (page - 1) * 4;
+
+        // 질문 개수보다 page가 크면 finish 처리
+        if (boxShowQuestionDTO == null ||
+                boxShowQuestionDTO.getQuestions() == null ||
+                boxShowQuestionDTO.getChoices() == null ||
+                boxShowQuestionDTO.getQuestions().size() < page) {
+
+            QuestionDTO questionDTO = new QuestionDTO();
+            questionDTO.setQuestionContent("finish");
+            toShowQuestionDTO.setShowQuestion(questionDTO);
+            toShowQuestionDTO.setChoices(Collections.emptyList());
+            return toShowQuestionDTO;
+        }
+
         int toIndex = Math.min(fromIndex + 4, boxShowQuestionDTO.getChoices().size());
 
         toShowQuestionDTO.setShowQuestion(boxShowQuestionDTO.getQuestions().get(page - 1));
         toShowQuestionDTO.setChoices(boxShowQuestionDTO.getChoices().subList(fromIndex, toIndex));
 
-        log.info("testId: {}, page: {}의 문항과 선택지: {}, {}", testId, page, toShowQuestionDTO.getShowQuestion(), toShowQuestionDTO.getChoices());
-
         return toShowQuestionDTO;
     }
+
 
     public void selectChoice(int testId, SelectUtil selectUtil) {
         log.info("testId: {}, selectUtil: {}", testId, selectUtil);
