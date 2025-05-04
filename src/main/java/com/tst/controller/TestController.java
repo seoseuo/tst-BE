@@ -38,7 +38,7 @@ public class TestController {
 
     // 테스트 시작 요청
     @PostMapping("/{testId}/start")
-    public ResponseEntity<String> startTest(@PathVariable int testId, @RequestParam String userCode) {
+    public ResponseEntity<SelectUtil> startTest(@PathVariable int testId, @RequestParam String userCode) {
         log.info("테스트 시작 요청 받음, testId: {}, userCode: {}", testId, userCode);
         return ResponseEntity.ok(testService.startTest(testId, userCode));
     }

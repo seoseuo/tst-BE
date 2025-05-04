@@ -54,7 +54,7 @@ public class TestService {
         return entityDtoMapper.toTestDTO(testRepository.findBytestIdAndIsDelete(testId, 1));
     }
 
-    public String startTest(int testId, String userCode) {
+    public SelectUtil startTest(int testId, String userCode) {
         log.info("testId: {}, userCode: {}로 테스트 시작", testId, userCode);
         // UUID 생성
         userCode = userCode + UUID.randomUUID().toString();
@@ -77,7 +77,12 @@ public class TestService {
         //log.info("레디스에 저장된 데이터 조회: {}", redisService.getAnswerSession(userCode));
         //log.info("레디스에 저장된 문항과 선택지: {}", redisService.getShowQuestionDTO(userCode + "questions"));
 
-        return userCode;
+        SelectUtil selectUtil = new SelectUtil();
+        selectUtil.setUserCode(userCode);
+        // 질문의 총 개수 전달 DTO 재활용 . .
+        selectUtil.setQuestionId(boxShowQuestionDTO.getQuestions().size());
+
+        return selectUtil;
     }
 
 
