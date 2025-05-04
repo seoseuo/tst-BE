@@ -38,10 +38,9 @@ public class TestController {
 
     // 테스트 시작 요청
     @PostMapping("/{testId}/start")
-    public ResponseEntity<Void> startTest(@PathVariable int testId, @RequestParam String userCode) {
+    public ResponseEntity<String> startTest(@PathVariable int testId, @RequestParam String userCode) {
         log.info("테스트 시작 요청 받음, testId: {}, userCode: {}", testId, userCode);
-        testService.startTest(testId, userCode);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(testService.startTest(testId, userCode));
     }
 
     // 질문 목록 조회

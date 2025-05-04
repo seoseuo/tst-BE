@@ -52,7 +52,7 @@ public class TestService {
         return entityDtoMapper.toTestDTO(testRepository.findBytestIdAndIsDelete(testId, 1));
     }
 
-    public void startTest(int testId, String userCode) {
+    public String startTest(int testId, String userCode) {
         log.info("testId: {}, userCode: {}로 테스트 시작", testId, userCode);
         // UUID 생성
         userCode = userCode + UUID.randomUUID().toString();
@@ -74,6 +74,8 @@ public class TestService {
 
         log.info("레디스에 저장된 데이터 조회: {}", redisService.getAnswerSession(userCode));
         log.info("레디스에 저장된 문항과 선택지: {}", redisService.getShowQuestionDTO(userCode + "questions"));
+
+        return userCode;
     }
 
 
