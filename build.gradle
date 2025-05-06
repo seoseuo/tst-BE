@@ -10,31 +10,68 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(17) // Java 17 사용
 	}
 }
 
 configurations {
 	compileOnly {
-		extendsFrom annotationProcessor
+		extendsFrom annotationProcessor // annotationProcessor 설정을 compileOnly에 적용
 	}
 }
 
 repositories {
-	mavenCentral()
+	mavenCentral() // 라이브러리 중앙 저장소
 }
 
 dependencies {
+	// Spring Boot 웹 및 JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-logging'
+
+	// Lombok (코드 자동 생성용)
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    
+	// Lombok (테스트)
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+	// MySQL JDBC 드라이버
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
+
+	// 내장 Tomcat 사용 대신 외부 톰캣을 사용할 경우
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+	// JUnit 테스트
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2' // JUnit 5 (Jupiter)
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// MapStruct 매핑 도구
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+	// Log4j 의존성
+	implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+	implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+    testLogging {
+        // 테스트가 성공해도 stdout/stderr를 보여주도록 설정
+        showStandardStreams = true
+
+        // 라이프사이클 이벤트(STARTED, PASSED, FAILED)도 함께 보여주려면
+        events "started", "passed", "skipped", "failed"
+    }
 }
+

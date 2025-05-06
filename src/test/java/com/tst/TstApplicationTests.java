@@ -1,4 +1,4 @@
-package com.tst.tst;
+package com.tst;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
