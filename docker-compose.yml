@@ -15,7 +15,7 @@ services:
       - mysql-data:/var/lib/mysql
 
   app:
-    image: $DOCKER_USERNAME/tst-be-image
+    image: ${DOCKER_USERNAME}/tst-be-image
     container_name: tst-be
     restart: always
     ports:
