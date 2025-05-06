@@ -7,15 +7,15 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: ${secrets.MYSQL_DATABASE}
-      MYSQL_USER: ${secrets.MYSQL_USER}
-      MYSQL_PASSWORD: ${secrets.MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${secrets.MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+      MYSQL_USER: ${{ secrets.MYSQL_USER }}
+      MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
     volumes:
       - mysql-data:/var/lib/mysql
 
   app:
-    image: ${secrets.DOCKER_USERNAME}/tst-be-image
+    image: ${{ secrets.DOCKER_USERNAME }}/tst-be-image
     container_name: tst-be
     restart: always
     ports:
@@ -23,9 +23,9 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: ${secrets.SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${secrets.SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${secrets.SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
 
 volumes:
   mysql-data:
