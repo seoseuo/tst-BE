@@ -15,7 +15,7 @@ services:
       - mysql-data:/var/lib/mysql
 
   app:
-    image: ${{ secrets.DOCKER_USERNAME }}/tst-be-image
+    image: seuo/tst-be-image
     container_name: tst-be
     restart: always
     ports:
