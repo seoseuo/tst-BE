@@ -50,8 +50,8 @@ jobs:
 
       - name: Build & Push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/tst-be-image .
-          docker push ${{ secrets.DOCKER_USERNAME }}/tst-be-image:latest
+          docker build -t seuo/tst-be-image .
+          docker push seuo/tst-be-image:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
