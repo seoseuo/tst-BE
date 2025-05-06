@@ -1,0 +1,150 @@
+# github repository actions 페이지에 나타날 이름
+name: Deploy with Docker
+
+# event trigger
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+       # JDK setting - github actions에서 사용할 JDK 설정 (프로젝트나 AWS의 java 버전과 달라도 무방)
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      # gradle caching - 빌드 시간 향상
+      - name: Gradle Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+      # 환경별 application.properties 파일 생성(1) - application.properties
+      - name: Make application.properties
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APP_PRO }}" > src/main/resources/application.properties
+          
+      # 환경별 yml 파일 생성(1) - application-aws.yml
+      # 서버 <-> S3 기능 추가 시 활성화
+      # - name: Make application-aws.yml
+      #   run: |
+      #     mkdir -p src/main/resources
+      #     echo "${{ secrets.YML_AWS }}" > src/main/resources/application-aws.yml
+
+      - name: Build project
+        run: ./gradlew build -x test
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Build & Push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/tst-be-image .
+          docker push ${{ secrets.DOCKER_USERNAME }}/tst-be-image:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PEM_KEY }}
+          script: |
+            mkdir -p ~/tst-deploy/nginx/conf.d && cd ~/tst-be-image
+
+            # 최신 이미지 가져오기
+            docker pull ${{ secrets.DOCKER_USERNAME }}/tst-be-image
+
+            # Nginx default.conf 생성
+            cat <<EONGINX > nginx/conf.d/default.conf
+            server {
+              listen 80;
+            
+              location / {
+                proxy_pass http://app:8080;
+                proxy_set_header Host \$host;
+                proxy_set_header X-Real-IP \$remote_addr;
+                proxy_connect_timeout       1200;
+                proxy_send_timeout          1200;
+                proxy_read_timeout          1200;
+                send_timeout                1200;
+              }
+    
+            }
+            EONGINX
+
+
+            # docker-compose.yml 생성
+            cat <<EOF > docker-compose.yml
+            version: '3'
+            services:
+              redis:
+                image: redis:alpine
+                container_name: redis
+                restart: unless-stopped
+                ports:
+                  - "6379:6379"
+                mem_limit: 128m
+                cpus: 0.2
+
+              db:
+                image: mysql:8
+                container_name: mysql-db
+                restart: unless-stopped
+                ports:
+                  - "3306:3306"
+                environment:
+                  MYSQL_DATABASE: ${MYSQL_DATABASE}
+                  MYSQL_USER: ${MYSQL_USER}
+                  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+                  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+                volumes:
+                  - mysql-data:/var/lib/mysql
+                mem_limit: 512m
+                cpus: 0.3
+
+              app:
+                image: ${{ secrets.DOCKER_USERNAME }}/tst-be-image
+                container_name: tst-be
+                restart: unless-stopped
+                expose:
+                  - "8080"
+                depends_on:
+                  - db
+                  - redis
+                environment:
+                  SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+                  SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+                  SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+                  SPRING_REDIS_HOST: redis
+                  SPRING_REDIS_PORT: 6379
+                mem_limit: 768m
+                cpus: 0.4
+
+              nginx:
+                image: nginx:latest
+                container_name: nginx-proxy
+                restart: unless-stopped
+                ports:
+                  - "80:80"
+                volumes:
+                  - ./nginx/conf.d:/etc/nginx/conf.d:ro
+                depends_on:
+                  - app
+
+            volumes:
+              mysql-data:
+            EOF
+
+            docker compose down
+            docker compose up -d
