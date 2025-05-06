@@ -7,10 +7,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-      MYSQL_USER: ${{ secrets.MYSQL_USER }}
-      MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+      MYSQL_DATABASE: tstdb  # 데이터베이스 이름
+      MYSQL_USER: tessbro
+      MYSQL_PASSWORD: tess1234
+      MYSQL_ROOT_PASSWORD: 1234
     volumes:
       - mysql-data:/var/lib/mysql
 
@@ -23,9 +23,9 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
-      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/tstdb?allowPublicKeyRetrieval=true&useSSL=false  # 데이터베이스 이름 수정
+      SPRING_DATASOURCE_USERNAME: tessbro
+      SPRING_DATASOURCE_PASSWORD: tess1234
 
 volumes:
   mysql-data:
