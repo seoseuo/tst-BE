@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'war'
+//	id 'war'
 	id 'org.springframework.boot' version '3.4.5'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -42,7 +42,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	// 내장 Tomcat 사용 대신 외부 톰캣을 사용할 경우
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+//	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
 	// JUnit 테스트
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -73,5 +73,9 @@ tasks.named('test') {
         // 라이프사이클 이벤트(STARTED, PASSED, FAILED)도 함께 보여주려면
         events "started", "passed", "skipped", "failed"
     }
+}
+
+bootJar {
+	archiveFileName = 'app.jar'
 }
 
