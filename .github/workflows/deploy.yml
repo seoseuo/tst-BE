@@ -116,7 +116,7 @@ jobs:
                 cpus: 0.3
 
               app:
-                image: ${{ secrets.DOCKER_USERNAME }}/tst-be-image
+                image: seuo/tst-be-image
                 container_name: tst-be
                 restart: unless-stopped
                 expose:
