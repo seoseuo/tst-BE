@@ -92,20 +92,6 @@ public class TestService {
 
         ShowQuestionDTO toShowQuestionDTO = new ShowQuestionDTO();
         int fromIndex = (page - 1) * 4;
-
-        // 질문 개수보다 page가 크면 finish 처리
-        if (boxShowQuestionDTO == null ||
-                boxShowQuestionDTO.getQuestions() == null ||
-                boxShowQuestionDTO.getChoices() == null ||
-                boxShowQuestionDTO.getQuestions().size() < page) {
-
-            QuestionDTO questionDTO = new QuestionDTO();
-            questionDTO.setQuestionContent("finish");
-            toShowQuestionDTO.setShowQuestion(questionDTO);
-            toShowQuestionDTO.setChoices(Collections.emptyList());
-            return toShowQuestionDTO;
-        }
-
         int toIndex = Math.min(fromIndex + 4, boxShowQuestionDTO.getChoices().size());
 
         toShowQuestionDTO.setShowQuestion(boxShowQuestionDTO.getQuestions().get(page - 1));
@@ -136,8 +122,8 @@ public class TestService {
         Optional<Style> optionalStyle = styleRepository.findById(answerSession.findMostSelectedStyle());
         Style style = optionalStyle.orElseThrow(() -> new RuntimeException("결과를 찾을 수 없습니다."));
 
-        redisService.delete(userCode);
-        redisService.delete(userCode+"questions");
+//        redisService.delete(userCode);
+//        redisService.delete(userCode+"questions");
 
         return entityDtoMapper.toStyleDTO(style);
     }
