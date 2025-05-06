@@ -60,13 +60,15 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PEM_KEY }}
           script: |
-            mkdir -p ~/tst-deploy/nginx/conf.d && cd ~/tst-be-image
+            mkdir -p ~/tst-deploy/nginx/conf.d && cd ~/tst-deploy
+
 
             # 최신 이미지 가져오기
-            docker pull ${{ secrets.DOCKER_USERNAME }}/tst-be-image
+            docker pull seuo/tst-be-image
 
             # Nginx default.conf 생성
-            cat <<EONGINX > nginx/conf.d/default.conf
+            cat <<EONGINX > ~/tst-deploy/nginx/conf.d/default.conf
+            
             server {
               listen 80;
             
