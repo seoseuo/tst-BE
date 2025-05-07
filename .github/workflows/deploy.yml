@@ -125,7 +125,7 @@ jobs:
                   - db
                   - redis
                 environment:
-                  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/tstdb?allowPublicKeyRetrieval=true&useSSL=false
+                  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/tstdb
                   SPRING_DATASOURCE_USERNAME: tessbro
                   SPRING_DATASOURCE_PASSWORD: tess1234
                   SPRING_REDIS_HOST: redis
