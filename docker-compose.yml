@@ -1,18 +1,26 @@
 version: '3'
+
+volumes:
+  mysql-data:
+
 services:
   db:
     image: mysql:8
     container_name: mysql-db
-    restart: always
+    restart: on-failure  # 실패 시에만 재시작
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: tstdb  # 데이터베이스 이름
+      MYSQL_DATABASE: tstdb
       MYSQL_USER: tessbro
       MYSQL_PASSWORD: tess1234
       MYSQL_ROOT_PASSWORD: 1234
     volumes:
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
 
   app:
     image: seuo/tst-be-image
@@ -23,9 +31,6 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/tstdb?allowPublicKeyRetrieval=true&useSSL=false  # 데이터베이스 이름 수정
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/tstdb
       SPRING_DATASOURCE_USERNAME: tessbro
       SPRING_DATASOURCE_PASSWORD: tess1234
-
-volumes:
-  mysql-data:
