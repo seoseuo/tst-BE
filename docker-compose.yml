@@ -4,6 +4,20 @@ volumes:
   mysql-data:
 
 services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    mem_limit: 128m
+    cpus: 0.2
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   db:
     image: mysql:8
     container_name: mysql-db
@@ -30,7 +44,24 @@ services:
       - "80:8080"
     depends_on:
       - db
+      - redis
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/tstdb
       SPRING_DATASOURCE_USERNAME: tessbro
       SPRING_DATASOURCE_PASSWORD: tess1234
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - app
+
+volumes:
+  mysql-data:
