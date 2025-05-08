@@ -60,7 +60,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
+                //.cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 💡 CORS 설정 명시
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()     // 프리플라이트 허용
                         .requestMatchers("/tests/**").permitAll()                   // ✅ 먼저 공개 경로 지정
@@ -69,6 +70,6 @@ public class SecurityConfig {
                 );
         return http.build();
     }
-    
+
 
 }
