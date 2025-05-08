@@ -3,7 +3,6 @@ package com.tst.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -43,16 +42,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults()) // 위 CORS 설정 적용
+                .cors(Customizer.withDefaults())            // 등록된 CorsConfigurationSource를 사용
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // CORS 프리플라이트만 허용
-                        .anyRequest().authenticated()                            // 그 외엔 인증 필요
+                        .requestMatchers("/**").permitAll()     // 모든 경로 허용
+                        .anyRequest().authenticated()
                 );
-
         return http.build();
     }
-
 }
