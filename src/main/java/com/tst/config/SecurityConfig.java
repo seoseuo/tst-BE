@@ -44,32 +44,15 @@ public class SecurityConfig {
         return source;
     }
 
-//    @Bean
-//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(csrf -> csrf.disable())
-//                .cors(Customizer.withDefaults())            // 등록된 CorsConfigurationSource를 사용
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/**").permitAll()     // 모든 경로 허용
-//                        .anyRequest().authenticated()
-//                );
-//        return http.build();
-//    }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                //.cors(Customizer.withDefaults())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 💡 CORS 설정 명시
+                .cors(Customizer.withDefaults())            // 등록된 CorsConfigurationSource를 사용
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()     // 프리플라이트 허용
-                        .requestMatchers("/tests/**").permitAll()                   // ✅ 먼저 공개 경로 지정
-                        .requestMatchers(HttpMethod.GET, "/**").authenticated()     // 그 외 GET은 인증 필요
-                        .requestMatchers("/**").authenticated()                     // 그 외 모두 인증 필요
+                        .requestMatchers("/**").permitAll()     // 모든 경로 허용
+                        .anyRequest().authenticated()
                 );
         return http.build();
     }
-
-
 }
