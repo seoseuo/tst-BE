@@ -119,11 +119,12 @@ public class TestService {
         log.info("testId: {}, userCode: {}로 결과 조회", testId, userCode);
 
         AnswerSession answerSession = redisService.getAnswerSession(userCode);
+        
         Optional<Style> optionalStyle = styleRepository.findById(answerSession.findMostSelectedStyle());
         Style style = optionalStyle.orElseThrow(() -> new RuntimeException("결과를 찾을 수 없습니다."));
 
-//        redisService.delete(userCode);
-//        redisService.delete(userCode+"questions");
+        redisService.delete(userCode);
+        redisService.delete(userCode+"questions");
 
         return entityDtoMapper.toStyleDTO(style);
     }
