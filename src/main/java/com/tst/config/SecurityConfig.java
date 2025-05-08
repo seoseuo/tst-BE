@@ -3,6 +3,7 @@ package com.tst.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -41,15 +42,29 @@ public class SecurityConfig {
         return source;
     }
 
+//    @Bean
+//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .cors(Customizer.withDefaults())            // 등록된 CorsConfigurationSource를 사용
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/**").permitAll()     // 모든 경로 허용
+//                        .anyRequest().authenticated()
+//                );
+//        return http.build();
+//    }
+
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())            // 등록된 CorsConfigurationSource를 사용
+                .cors(Customizer.withDefaults())  // 위 CORS 설정 적용
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()     // 모든 경로 허용
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 메서드만 허용
+                        .requestMatchers(HttpMethod.GET, "/**").authenticated()   // GET 요청도 인증 필요
+                        .requestMatchers("/**").authenticated()                   // 모든 요청에 대해 인증을 요구
                 );
         return http.build();
     }
+
 }
