@@ -32,9 +32,9 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         // 허용할 Origin (Postman 테스트도 고려하여 null 포함)
-//        config.setAllowedOrigins(List.of(frontUrl,frontUrl2,frontUrl3));
-        // 명시적 등록
-        config.setAllowedOrigins(List.of("http://3.34.143.238",frontUrl2,frontUrl3));
+        config.setAllowedOrigins(List.of(frontUrl,frontUrl2,frontUrl3));
+
+
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -60,13 +60,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())  // 위 CORS 설정 적용
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 메서드만 허용
-                        .requestMatchers(HttpMethod.GET, "/**").authenticated()   // GET 요청도 인증 필요
-                        .requestMatchers("/**").authenticated()                   // 모든 요청에 대해 인증을 요구
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()     // 프리플라이트 허용
+                        .requestMatchers("/tests/**").permitAll()                   // ✅ 먼저 공개 경로 지정
+                        .requestMatchers(HttpMethod.GET, "/**").authenticated()     // 그 외 GET은 인증 필요
+                        .requestMatchers("/**").authenticated()                     // 그 외 모두 인증 필요
                 );
         return http.build();
     }
+    
 
 }
