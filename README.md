@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/24974b4e-2abd-4d36-9296-1ca9783d003d)
+
 ![로고](https://github.com/user-attachments/assets/1c1cc665-6405-47d0-b4e5-7c76d23740d2)
 #### 테스형
 > 테스형, 자기사유 테스트 플랫폼
