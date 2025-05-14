@@ -95,7 +95,8 @@ public int findMostSelectedStyle() {
 
 ## 스택
 
-![image](https://github.com/user-attachments/assets/35e5c321-195f-47b3-8e65-b3e9501d78fa)
+
+![기술들](https://github.com/user-attachments/assets/2fca05d1-5843-47f3-93ba-e90964feee60)
 
 
 ## 아키텍쳐
