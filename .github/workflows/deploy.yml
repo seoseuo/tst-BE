@@ -51,6 +51,14 @@ jobs:
           script: |
             mkdir -p ~/tst-deploy/nginx/conf.d && cd ~/tst-deploy
 
+            # 80번 포트를 점유한 프로세스 확인 및 종료
+            if sudo lsof -ti :80; then
+              echo "80번 포트 사용 중인 프로세스 종료 중..."
+              sudo lsof -ti :80 | xargs -r sudo kill -9
+            else
+              echo "80번 포트 사용 중인 프로세스 없음."
+            fi
+
             # 기존 컨테이너 강제 삭제 (필요시)
             docker rm -f redis mysql-db tst-be nginx-proxy || true
 
@@ -76,7 +84,7 @@ jobs:
 
             # docker-compose.yml 생성
             cat <<EOF > docker-compose.yml
-            # version: '3'  # Docker Compose 버전 경고로 주석 처리
+            # version: '3'  # 주석 처리됨
 
             services:
               redis:
@@ -108,8 +116,8 @@ jobs:
                 image: seuo/tst-be-image
                 container_name: tst-be
                 restart: unless-stopped
-                ports:
-                  - "80:8080"
+                expose:
+                  - "8080"
                 depends_on:
                   - db
                   - redis
