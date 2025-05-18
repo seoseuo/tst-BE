@@ -143,6 +143,8 @@ jobs:
 
             volumes:
               mysql-data:
+                external: true
+                name: tst-deploy_mysql-data
             EOF
 
             docker compose down --remove-orphans
