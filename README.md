@@ -100,7 +100,7 @@ public int findMostSelectedStyle() {
 
 ### 테스트 유형 매핑 프로세스 설계
 
-> 각 선택지는 최대 2가지 결과 유형에 매핑, 균형있고 뻔하거나 편향되지 않는 테스트 진행 가능> 
+> 각 선택지는 최대 2가지 결과 유형에 매핑, 균형있고 뻔하거나 편향되지 않는 테스트 진행 가능 
 
 ![image](https://github.com/user-attachments/assets/174da13a-eedb-4949-82c2-fed06ffd7a76)
 
