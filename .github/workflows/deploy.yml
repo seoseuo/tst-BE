@@ -1,7 +1,5 @@
-# github repository actions 페이지에 나타날 이름
 name: Deploy with Docker
 
-# event trigger
 on:
   push:
     branches: [ "master" ]
@@ -11,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-       # JDK setting - github actions에서 사용할 JDK 설정 (프로젝트나 AWS의 java 버전과 달라도 무방)
       - uses: actions/checkout@v4
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -19,7 +16,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
-      # gradle caching - 빌드 시간 향상
       - name: Gradle Cache
         uses: actions/cache@v3
         with:
@@ -29,18 +25,11 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle
-      # 환경별 application.properties 파일 생성(1) - application.properties
+
       - name: Make application.properties
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APP_PRO }}" > src/main/resources/application.properties
-          
-      # 환경별 yml 파일 생성(1) - application-aws.yml
-      # 서버 <-> S3 기능 추가 시 활성화
-      # - name: Make application-aws.yml
-      #   run: |
-      #     mkdir -p src/main/resources
-      #     echo "${{ secrets.YML_AWS }}" > src/main/resources/application-aws.yml
 
       - name: Build project
         run: ./gradlew build -x test
@@ -62,34 +51,33 @@ jobs:
           script: |
             mkdir -p ~/tst-deploy/nginx/conf.d && cd ~/tst-deploy
 
+            # 기존 컨테이너 강제 삭제 (필요시)
+            docker rm -f redis mysql-db tst-be nginx-proxy || true
 
             # 최신 이미지 가져오기
             docker pull seuo/tst-be-image
 
             # Nginx default.conf 생성
             cat <<EONGINX > ~/tst-deploy/nginx/conf.d/default.conf
-            
             server {
               listen 80;
-            
+
               location / {
                 proxy_pass http://app:8080;
                 proxy_set_header Host \$host;
                 proxy_set_header X-Real-IP \$remote_addr;
-                #proxy_set_header Origin http_origin;                
                 proxy_connect_timeout       1200;
                 proxy_send_timeout          1200;
                 proxy_read_timeout          1200;
                 send_timeout                1200;
               }
-    
             }
             EONGINX
 
-
             # docker-compose.yml 생성
             cat <<EOF > docker-compose.yml
-            version: '3'
+            # version: '3'  # Docker Compose 버전 경고로 주석 처리
+
             services:
               redis:
                 image: redis:alpine
@@ -120,8 +108,8 @@ jobs:
                 image: seuo/tst-be-image
                 container_name: tst-be
                 restart: unless-stopped
-                expose:
-                  - "8080"
+                ports:
+                  - "80:8080"
                 depends_on:
                   - db
                   - redis
@@ -149,5 +137,5 @@ jobs:
               mysql-data:
             EOF
 
-            docker compose down
+            docker compose down --remove-orphans
             docker compose up -d
