@@ -54,12 +54,28 @@
 > 
 
 ![image](https://github.com/user-attachments/assets/449fb06e-cdb8-408b-ae15-fee7eb7efe68)
+```java
+    public void selectChoice(int testId, SelectUtil selectUtil) {
+        log.info("testId: {}, selectUtil: {}", testId, selectUtil);
 
+        SelectedBox selectedBox = new SelectedBox();
+        selectedBox.setStyleId1(selectUtil.getStyleId1());
+        selectedBox.setStyleId2(selectUtil.getStyleId2());
+
+        AnswerSession answerSession = redisService.getAnswerSession(selectUtil.getUserCode());
+        answerSession.getSelectedBoxesMap().put(selectUtil.getQuestionId(), selectedBox);
+        redisService.setAnswerSession(selectUtil.getUserCode(), answerSession, 1800000);
+
+        log.info("레디스에 저장된 선택지: {}", redisService.getAnswerSession(selectUtil.getUserCode()));
+    }
+```
 
 ### 테스트 결과 추출 알고리즘 구현
 
 > 한개의 선택지 당 2가지의 결과 유형(Style)에 매핑이 가능하므로 style1,2 구분 및 카운트
 > 
+
+![image](https://github.com/user-attachments/assets/8742ad74-f912-42bc-b7e5-f23cce067c22)
 
 ```java
 public int findMostSelectedStyle() {
