@@ -69,8 +69,8 @@ public class TestService {
 
         // 문항 세팅
         ShowQuestionDTO boxShowQuestionDTO = new ShowQuestionDTO();
-        boxShowQuestionDTO.setQuestions(entityDtoMapper.toQuestionDTOList(questionRepository.findBytestId(testId)));
-        boxShowQuestionDTO.setChoices(entityDtoMapper.toChoiceDTOList(choiceRepository.findBytestId(testId)));
+        boxShowQuestionDTO.setQuestions(entityDtoMapper.toQuestionDTOList(questionRepository.findByTest_TestId(testId)));
+        boxShowQuestionDTO.setChoices(entityDtoMapper.toChoiceDTOList(choiceRepository.findByQuestion_Test_TestId(testId)));
 
         redisService.setShowQuestionDTO(userCode + "questions", boxShowQuestionDTO, 1800000);
 
@@ -119,12 +119,14 @@ public class TestService {
         log.info("testId: {}, userCode: {}로 결과 조회", testId, userCode);
 
         AnswerSession answerSession = redisService.getAnswerSession(userCode);
-        
+
         Optional<Style> optionalStyle = styleRepository.findById(answerSession.findMostSelectedStyle());
         Style style = optionalStyle.orElseThrow(() -> new RuntimeException("결과를 찾을 수 없습니다."));
 
-        redisService.delete(userCode);
-        redisService.delete(userCode+"questions");
+
+        // 로컬 환경에서의 Next.js useEffect 시 호출은 `stirct mode 때문에 2번 보내진다.
+        //redisService.delete(userCode);
+        //redisService.delete(userCode+"questions");
 
         return entityDtoMapper.toStyleDTO(style);
     }

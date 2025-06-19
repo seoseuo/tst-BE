@@ -1,14 +1,18 @@
 package com.tst.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TestDTO {
-    private int testId;
+    private Integer testId;
     private String testName;
     private String testDes;
     private String testDetail;
     private String testImg1;
     private String testImg2;
-    private int isDelete = 1;
+    private Integer isDelete;
+    private Integer adminAllow;
 }

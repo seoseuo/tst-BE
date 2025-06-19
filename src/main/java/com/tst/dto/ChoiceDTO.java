@@ -1,14 +1,15 @@
 package com.tst.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChoiceDTO {
-    private int choiceId;
-    private int questionId;
-    private int testId;
+    private Integer choiceId;
+    private QuestionDTO questionDTO;
     private String choiceContent;
-    private int styleId1;
-    private int styleId2;
-    private int isDelete = 1;
+    private Integer styleId;
+    private Integer isDelete;
 }

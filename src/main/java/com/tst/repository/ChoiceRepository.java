@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ChoiceRepository extends JpaRepository<Choice, Integer> {
-    List<Choice> findBytestId(int testId);
+//    List<Choice> findBytestId(int testId);
+List<Choice> findByQuestion_Test_TestId(int testId);
+
 }
