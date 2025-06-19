@@ -32,6 +32,7 @@ public class Style {
     @Column(name = "style_img", length = 255)
     private String styleImg;
 
+    @Builder.Default
     @Column(name = "is_delete", nullable = false)
-    private Integer isDelete;
+    private Integer isDelete = 1;
 }

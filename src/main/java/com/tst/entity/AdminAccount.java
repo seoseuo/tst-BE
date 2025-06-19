@@ -31,8 +31,9 @@ public class AdminAccount {
     @Column(name = "admin_name", nullable = false, length = 50)
     private String adminName;
 
+    @Builder.Default
     @Column(name = "is_delete", nullable = false)
-    private Integer isDelete;
+    private Integer isDelete = 1;
 }
 
 

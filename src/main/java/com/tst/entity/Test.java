@@ -34,9 +34,11 @@ public class Test {
     @Column(name = "test_img2", length = 255)
     private String testImg2;
 
+    @Builder.Default
     @Column(name = "is_delete", nullable = false)
-    private Integer isDelete;
+    private Integer isDelete = 1;
 
+    @Builder.Default
     @Column(name = "admin_allow", nullable = false)
-    private Integer adminAllow;
+    private Integer adminAllow = 0 ;
 }

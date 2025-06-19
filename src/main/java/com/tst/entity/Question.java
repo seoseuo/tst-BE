@@ -26,6 +26,7 @@ public class Question {
     @Column(name = "question_content", nullable = false, length = 255)
     private String questionContent;
 
+    @Builder.Default
     @Column(name = "is_delete", nullable = false)
-    private Integer isDelete;
+    private Integer isDelete = 1;
 }

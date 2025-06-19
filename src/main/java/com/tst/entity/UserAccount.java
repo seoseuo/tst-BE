@@ -31,8 +31,9 @@ public class UserAccount {
     @Column(name = "user_join_date", nullable = false)
     private LocalDateTime userJoinDate;
 
+    @Builder.Default
     @Column(name = "is_delete", nullable = false)
-    private Integer isDelete;
+    private Integer isDelete = 1;
 
     @Column(name = "login_type", nullable = false, length = 20)
     private String loginType;

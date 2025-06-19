@@ -11,5 +11,5 @@ public class AdminAccountDTO {
     private String adminEmail;
     private String adminPassword;
     private String adminName;
-    private Integer isDelete;
+    private Integer isDelete = 1;
 }

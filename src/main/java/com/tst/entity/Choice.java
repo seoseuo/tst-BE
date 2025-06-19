@@ -30,6 +30,7 @@ public class Choice {
     @JoinColumn(name = "style_id", nullable = false)
     private Style style;
 
+    @Builder.Default
     @Column(name = "is_delete", nullable = false)
-    private Integer isDelete;
+    private Integer isDelete = 1;
 }
